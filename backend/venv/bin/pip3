@@ -1,6 +1,4 @@
-#!/bin/sh
-'''exec' "/home/joao/Documentos/Dev/eng de sistemas/Nautilus Monitor/backend/venv/bin/python3" "$0" "$@"
-' '''
+#!/home/jaimin/nautilus-monitor/backend/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

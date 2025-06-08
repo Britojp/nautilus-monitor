@@ -1,3 +1,4 @@
 flask
 flask-cors
 pymongo
+pydantic>=1.10,<2.0
