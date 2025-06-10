@@ -37,9 +37,6 @@ def get_users():
         user["_id"] = str(user["_id"])
     return jsonify(users)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
-
 # Gera uma leitura com valores aleatórios para simular o sensor, enviando os alertas se gerados
 @app.route('/sensor-data', methods=['GET'])
 def simular_leitura():
@@ -69,10 +66,13 @@ def historico_leituras():
 def verificar_limites(dado: SensorLeitura) -> list:
     alertas_gerados = []
 
+    variaveis_verificadas = set()
+
     for var in limites.dict():
         base = var.split("_")[0]
-        if f"{base}_min" not in limites.dict():
+        if base in variaveis_verificadas:
             continue
+        variaveis_verificadas.add(base)
 
         min_ = getattr(limites, f"{base}_min")
         max_ = getattr(limites, f"{base}_max")
@@ -112,3 +112,6 @@ def atualizar_limites():
     global limites
     limites = novo_limite
     return jsonify({"mensagem": "Limites atualizados com sucesso"})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=True)

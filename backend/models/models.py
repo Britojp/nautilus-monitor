@@ -28,7 +28,7 @@ class SensorLeitura(BaseModel):
     voltagem:float
     corrente:float
     impedancia:float
-    sinal_lora: int
+    sinal: int
     timestamp: Optional[datetime] = Field(default_factory=datetime.now(timezone.utc))
 
 """
@@ -47,12 +47,12 @@ class Limites(BaseModel):
     corrente_max: float
     impedancia_min: float
     impedancia_max: float
-    sinal_lora_min: int
-    sinal_lora_max: int
+    sinal_min: int
+    sinal_max: int
 
     @root_validator
     def validar_pares_min_max(cls, valores):
-        campos = ["temperatura", "umidade", "voltagem", "corrente", "impedancia"]
+        campos = ["temperatura", "umidade", "voltagem", "corrente", "impedancia", "sinal"]
         erros = []
 
         for campo in campos:

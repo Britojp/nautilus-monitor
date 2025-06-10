@@ -25,6 +25,6 @@ class Sensor:
             voltagem=random.uniform(13.5,15),
             corrente=random.uniform(6,8),
             impedancia=random.uniform(1.4,1.95),
-            sinal_lora=random.randint(-120,-30),
+            sinal=random.randint(-120,-30),
             timestamp=datetime.now(timezone.utc)
         )

@@ -32,7 +32,7 @@ codigos = {
     "voltagem": 3,
     "corrente": 4,
     "impedancia": 5,
-    "sinal_lora": 6
+    "sinal": 6
 }
 
 """

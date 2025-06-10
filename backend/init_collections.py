@@ -37,8 +37,8 @@ limites_default = {
     "corrente_max": 7.1,
     "impedancia_min": 1.45,
     "impedancia_max": 1.70,
-    "sinal_lora_min": -85,
-    "sinal_lora_max": -30
+    "sinal_min": -85,
+    "sinal_max": -30
 }
 
 if not db.limites.find_one({"_id": "global"}):
@@ -61,7 +61,7 @@ validador_leitura = {
             "voltagem": {"bsonType": "double"},
             "corrente": {"bsonType": "double"},
             "impedancia": {"bsonType": "double"},
-            "sinal_lora": {"bsonType": "int"},
+            "sinal": {"bsonType": "int"},
             "timestamp": {"bsonType": "date"}
         }
     }
@@ -80,7 +80,7 @@ validador_limites = {
             "voltagem_min", "voltagem_max",
             "corrente_min", "corrente_max",
             "impedancia_min", "impedancia_max",
-            "sinal_lora_min", "sinal_lora_max"
+            "sinal_min", "sinal_max"
         ],
         "properties": {
             "temperatura_min": {"bsonType": "double"},
@@ -93,8 +93,8 @@ validador_limites = {
             "corrente_max": {"bsonType": "double"},
             "impedancia_min": {"bsonType": "double"},
             "impedancia_max": {"bsonType": "double"},
-            "sinal_lora_min": {"bsonType": "int"},
-            "sinal_lora_max": {"bsonType": "int"}
+            "sinal_min": {"bsonType": "int"},
+            "sinal_max": {"bsonType": "int"}
         }
     }
 }
