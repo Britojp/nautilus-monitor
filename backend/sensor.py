@@ -20,10 +20,11 @@ class Sensor:
     def gerar_leitura(self) -> SensorLeitura:
         return SensorLeitura(
             setor=self.setor,
-            temperatura=random.uniform(70,220),
+            temperatura=random.uniform(60,220),
             umidade=random.uniform(35,95),
-            voltagem=random.uniform(13.8,15),
+            voltagem=random.uniform(13.5,15),
             corrente=random.uniform(6,8),
             impedancia=random.uniform(1.4,1.95),
+            sinal_lora=random.randint(-120,-30),
             timestamp=datetime.now(timezone.utc)
         )
