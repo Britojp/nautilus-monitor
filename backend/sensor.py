@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import random
-from models import SensorLeitura
+from models.models import SensorLeitura
 
 """
 Representa um sensor físico simulado que gera as leituras.

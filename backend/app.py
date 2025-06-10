@@ -1,6 +1,6 @@
-from backend.limites import calcular_severidade, codigo_alerta
-from backend.sensor import Sensor
-from models import SensorLeitura, Limites, Alerta
+from limites import calcular_severidade, codigo_alerta
+from sensor import Sensor
+from models.models import SensorLeitura, Limites, Alerta
 
 import os
 from flask import Flask, jsonify, request
@@ -11,7 +11,7 @@ from random import randint
 app = Flask(__name__)
 CORS(app)
 
-mongo_uri = os.getenv('MONGO_URI', 'mongodb://localhost:27017/meu_banco')
+mongo_uri = os.getenv('MONGO_URI', 'mongodb://mongodb:27017/meu_banco')
 client = MongoClient(mongo_uri)
 db = client.meu_banco
 

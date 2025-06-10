@@ -1,6 +1,20 @@
+import time
 from pymongo import MongoClient
+from pymongo.errors import ServerSelectionTimeoutError
 
-client = MongoClient("mongodb://localhost:27017/")
+def esperar_mongo(uri, tentativas=10, intervalo=3):
+    for tentativa in range(tentativas):
+        try:
+            client = MongoClient(uri, serverSelectionTimeoutMS=2000)
+            client.admin.command("ping")
+            print("MongoDB conectado com sucesso.")
+            return client
+        except ServerSelectionTimeoutError as e:
+            print(f"[{tentativa + 1}/{tentativas}] Aguardando MongoDB... ({e})")
+            time.sleep(intervalo)
+    raise Exception("Não foi possível conectar ao MongoDB.")
+
+client = esperar_mongo("mongodb://mongodb:27017")
 db = client["meu_banco"]
 
 def collection_helper(nome, validador):
