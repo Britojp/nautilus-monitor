@@ -1,3 +1,4 @@
+from backend.limites import calcular_severidade, codigo_alerta
 from backend.sensor import Sensor
 from models import SensorLeitura, Limites, Alerta
 
@@ -16,13 +17,12 @@ db = client.meu_banco
 
 setores = ["A1", "A2", "B1", "B2", "C3", "E4"]
 
-limites = {
-    "temperatura": (75, 105),
-    "umidade": (40, 60),
-    "voltagem": (13.8, 14.8),
-    "corrente": (6.1, 7.1),
-    "impedancia": (1.45, 1.7)
-}
+limites_doc = db.limites.find_one({"_id": "global"})
+if not limites_doc:
+    raise Exception("Limites não definidos.")
+
+limites_doc.pop("_id")
+limites = Limites(**limites_doc)
 
 @app.route('/users', methods=['POST'])
 def add_user():
@@ -40,6 +40,7 @@ def get_users():
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
 
+# Gera uma leitura com valores aleatórios para simular o sensor
 @app.route('/sensor-data', methods=['GET'])
 def simular_leitura():
     sensor = Sensor(setor=setores[randint(0,5)])
@@ -48,6 +49,18 @@ def simular_leitura():
     verificar_limites(leitura)
     return jsonify(leitura.dict)
 
+# Últimas 50 leituras
+@app.route('/sensor-data/historico', methods=['GET'])
+def historico_leituras():
+    leituras_cursor = db.leitura_sensores.find().sort("timestamp", -1).limit(50)
+    leituras = []
+
+    for doc in leituras_cursor:
+        doc["_id"] = str(doc["_id"])
+        leituras.append(doc)
+
+    return jsonify(leituras)
+
 def verificar_limites(dado: SensorLeitura):
     for var in limites:
         valor = getattr(dado, var)
@@ -55,6 +68,34 @@ def verificar_limites(dado: SensorLeitura):
         min_, max_ = limites[var]
 
         if not (min_ <= valor <= max_):
+            
+            sev = calcular_severidade(valor, min_, max_)
+
+            cod = codigo_alerta(var)
+
             msg = f"{var.capitalize()} fora do limite: {valor} no setor {dado.setor}"
-            alerta = Alerta(mensagem=msg)
+            alerta = Alerta(mensagem=msg, codigo=cod, severidade=sev)
             db.alertas.insert_one(alerta.dict())
+
+# Retorna o limite global
+@app.route('/limites', methods=['GET'])
+def obter_limites():
+    limites_data = db.limites.find_one({"_id": "global"})
+    if not limites_data:
+        return jsonify({"erro": "Limites não definidos"}), 404
+
+    limites_data.pop('_id')  # remover _id do Mongo
+    return jsonify(limites_data)
+
+# Atualiza o limite global
+@app.route('/limites', methods=['PUT'])
+def atualizar_limites():
+    try:
+        novo_limite = Limites(**request.get_json())
+    except Exception as e:
+        return jsonify({"erro": f"Dados inválidos: {str(e)}"}), 400
+
+    db.limites.replace_one({"_id": "global"}, novo_limite.dict(), upsert=True)
+    global limites
+    limites = novo_limite
+    return jsonify({"mensagem": "Limites atualizados com sucesso"})
