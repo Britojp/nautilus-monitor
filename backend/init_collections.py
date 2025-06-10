@@ -53,7 +53,7 @@ Criação da collection de leitura dos sensores
 validador_leitura = {
     "$jsonSchema": {
         "bsonType": "object",
-        "required": ["setor", "temperatura", "umidade", "voltagem", "corrente", "impedancia", "sinal_lora", "timestamp"],
+        "required": ["setor", "temperatura", "umidade", "voltagem", "corrente", "impedancia", "sinal", "timestamp"],
         "properties": {
             "setor": {"bsonType": "string"},
             "temperatura": {"bsonType": "double"},
