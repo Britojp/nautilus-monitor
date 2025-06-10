@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, root_validator
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -16,6 +16,10 @@ Voltagem (float) : Voltagem medida no componente elétrico da infraestrutura exp
 Corrente (float) : Corrente elétrica que passa no componente elétrico expressa em kA
 
 Impedância (float) : Magnitude da impedância no componente elétrico expressa em Ohms
+
+Sinal LoRa (int) : Potência do sinal recebido expressa em decibéis-miliwatts (dBm)
+
+Timestamp (datetime) : Registro da data e hora da leitura
 """
 class SensorLeitura(BaseModel):
     setor:str
@@ -23,7 +27,8 @@ class SensorLeitura(BaseModel):
     umidade:float
     voltagem:float
     corrente:float
-    impedancia:complex
+    impedancia:float
+    sinal_lora: int
     timestamp: Optional[datetime] = Field(default_factory=datetime.now(timezone.utc))
 
 """
@@ -40,9 +45,27 @@ class Limites(BaseModel):
     voltagem_max: float
     corrente_min: float
     corrente_max: float
-    impedancia_min: complex
-    impedancia_max: complex
+    impedancia_min: float
+    impedancia_max: float
+    sinal_lora_min: int
+    sinal_lora_max: int
 
+    @root_validator
+    def validar_pares_min_max(cls, valores):
+        campos = ["temperatura", "umidade", "voltagem", "corrente", "impedancia"]
+        erros = []
+
+        for campo in campos:
+            min_val = valores.get(f"{campo}_min")
+            max_val = valores.get(f"{campo}_max")
+
+            if min_val is not None and max_val is not None:
+                if min_val >= max_val:
+                    erros.append(f"{campo}_min ({min_val}) deve ser menor que {campo}_max ({max_val})")
+
+        if erros:
+            raise ValueError(" | ".join(erros))
+        return valores
 
 """
 Estrutura dos dados de alerta
