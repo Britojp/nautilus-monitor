@@ -1,4 +1,4 @@
-#!/home/jaimin/nautilus-monitor/backend/venv/bin/python3
+#!/home/joao/Documentos/nautilus-monitor/backend/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

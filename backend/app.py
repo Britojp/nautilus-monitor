@@ -24,19 +24,6 @@ if not limites_doc:
 limites_doc.pop("_id")
 limites = Limites(**limites_doc)
 
-@app.route('/users', methods=['POST'])
-def add_user():
-    user = request.json
-    result = db.users.insert_one(user)
-    return jsonify({"id": str(result.inserted_id)}), 201
-
-@app.route('/users', methods=['GET'])
-def get_users():
-    users = list(db.users.find())
-    for user in users:
-        user["_id"] = str(user["_id"])
-    return jsonify(users)
-
 # Gera uma leitura com valores aleatórios para simular o sensor, enviando os alertas se gerados
 @app.route('/sensor-data', methods=['GET'])
 def simular_leitura():
